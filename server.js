@@ -1,8 +1,10 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var mysql = require('mysql');
+let express = require('express');
+let cors = require('cors');
+let app = express();
+let bodyParser = require('body-parser');
+let mysql = require('mysql');
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
                                   extended: true
@@ -25,82 +27,83 @@ var dbConn = mysql.createConnection({
 dbConn.connect();
 
 
-// Retrieve all users
-app.get('/users', function (req, res) {
-    dbConn.query('SELECT * FROM users', function (error, results, fields) {
+// Retrieve all categories
+app.get('/categories', function (req, res) {
+    dbConn.query('SELECT * FROM categories', function (error, results, fields) {
+        // res.set('Access-Control-Allow-Origin', '*');
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'users list.' });
+        return res.send({ error: false, data: results, message: 'categories list.' });
     });
 });
 
 
-// Retrieve user with id
-app.get('/user/:id', function (req, res) {
+// Retrieve categorie with id
+app.get('/categorie/:id', function (req, res) {
 
-    let user_id = req.params.id;
+    let categorie_id = req.params.id;
 
-    if (!user_id) {
-        return res.status(400).send({ error: true, message: 'Please provide user_id' });
+    if (!categorie_id) {
+        return res.status(400).send({ error: true, message: 'Please provide categorie_id' });
     }
 
-    dbConn.query('SELECT * FROM users where id=?', user_id, function (error, results, fields) {
+    dbConn.query('SELECT * FROM categories where id=?', categorie_id, function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results[0], message: 'users list.' });
+        return res.send({ error: false, data: results[0], message: 'categories list.' });
     });
 
 });
 
 
-// Add a new user
-app.post('/user', function (req, res) {
+// Add a new categorie
+app.post('/categorie', function (req, res) {
 
-    let user = req.body.user;
+    let categorie = req.body.categorie;
 
-    if (!user) {
-        return res.status(400).send({ error:true, message: 'Please provide user' });
+    if (!categorie) {
+        return res.status(400).send({ error:true, message: 'Please provide categorie' });
     }
 
-    dbConn.query("INSERT INTO users SET ? ", { user: user }, function (error, results, fields) {
+    dbConn.query("INSERT INTO categories (libelle) VALUES (?)", { libelle: categorie.libelle }, function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'New user has been created successfully.' });
+        return res.send({ error: false, data: results, message: 'New categorie has been created successfully.' });
     });
 });
 
 
-//  Update user with id
-app.put('/user', function (req, res) {
+//  Update categorie with id
+app.put('/categorie', function (req, res) {
 
-    let user_id = req.body.user_id;
-    let user = req.body.user;
+    let categorie_id = req.body.categorie_id;
+    let categorie = req.body.categorie;
 
-    if (!user_id || !user) {
-        return res.status(400).send({ error: user, message: 'Please provide user and user_id' });
+    if (!categorie_id || !categorie) {
+        return res.status(400).send({ error: categorie, message: 'Please provide categorie and categorie_id' });
     }
 
-    dbConn.query("UPDATE users SET user = ? WHERE id = ?", [user, user_id], function (error, results, fields) {
+    dbConn.query("UPDATE categories SET categorie = ? WHERE id = ?", [categorie, categorie_id], function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'user has been updated successfully.' });
+        return res.send({ error: false, data: results, message: 'categorie has been updated successfully.' });
     });
 });
 
 
-//  Delete user
-app.delete('/user', function (req, res) {
+//  Delete categorie
+app.delete('/categorie', function (req, res) {
 
-    let user_id = req.body.user_id;
+    let categorie_id = req.body.categorie_id;
 
-    if (!user_id) {
-        return res.status(400).send({ error: true, message: 'Please provide user_id' });
+    if (!categorie_id) {
+        return res.status(400).send({ error: true, message: 'Please provide categorie_id' });
     }
-    dbConn.query('DELETE FROM users WHERE id = ?', [user_id], function (error, results, fields) {
+    dbConn.query('DELETE FROM categories WHERE id = ?', [categorie_id], function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'User has been updated successfully.' });
+        return res.send({ error: false, data: results, message: 'categorie has been updated successfully.' });
     });
 });
 
 // set port
-app.listen(3000, function () {
-    console.log('Node app is running on port 3000');
+app.listen(5000, function () {
+    console.log('Node app is running on port 5000');
 });
 
 module.exports = app;
