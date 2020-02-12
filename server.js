@@ -58,14 +58,15 @@ app.get('/categorie/:id', function (req, res) {
 app.post('/categorie', function (req, res) {
 
     let categorie = req.body.categorie;
+    console.log('pouet');
 
     if (!categorie) {
         return res.status(400).send({ error:true, message: 'Please provide categorie' });
     }
 
-    dbConn.query("INSERT INTO categories (libelle) VALUES (?)", { libelle: categorie.libelle }, function (error, results, fields) {
+    dbConn.query("INSERT INTO categories SET libelle = ?", { libelle: categorie.libelle }, function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'New categorie has been created successfully.' });
+        return res.send({ error: false, data: results, message: 'New categorie has been created successfully.'});
     });
 });
 
@@ -90,7 +91,7 @@ app.put('/categorie', function (req, res) {
 //  Delete categorie
 app.delete('/categorie', function (req, res) {
 
-    let categorie_id = req.body.categorie_id;
+    let categorie_id = req.body.categorie.id;
 
     if (!categorie_id) {
         return res.status(400).send({ error: true, message: 'Please provide categorie_id' });
