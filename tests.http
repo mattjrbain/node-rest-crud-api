@@ -1,0 +1,15 @@
+# curl -X DELETE "https://127.0.0.1:8000/api/rubriques/7" -H  "accept: */*"
+DELETE https://127.0.0.1:8000/api/rubriques/7
+accept: */*
+
+###
+
+# curl -X POST "https://127.0.0.1:8000/api/rubriques" -H  "accept: application/ld+json" -H  "Content-Type: application/json" -d "{\"libelle\":\"string\"}"
+POST https://127.0.0.1:8000/api/rubriques
+accept: application/ld+json
+Content-Type: application/json
+
+{"libelle":"string"}
+
+###
+
