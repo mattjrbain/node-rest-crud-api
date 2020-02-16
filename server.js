@@ -1,4 +1,4 @@
-let express = require('express');
+const express = require("express");
 let cors = require('cors');
 let app = express();
 let bodyParser = require('body-parser');
@@ -16,7 +16,7 @@ app.get('/', function (req, res) {
     return res.send({ error: true, message: 'hello' })
 });
 // connection configurations
-var dbConn = mysql.createConnection({
+const dbConn = mysql.createConnection({
                                         host: 'localhost',
                                         user: 'root',
                                         password: '',
@@ -71,16 +71,16 @@ app.post('/categorie', function (req, res) {
 
 
 //  Update categorie with id
-app.put('/categorie', function (req, res) {
+app.put('/categorie/:id', function (req, res) {
 
-    let categorie_id = req.body.categorie_id;
-    let categorie = req.body.categorie;
+    let categorie_id = req.params.id;
+    let libelle = req.body.libelle;
 
-    if (!categorie_id || !categorie) {
-        return res.status(400).send({ error: categorie, message: 'Please provide categorie and categorie_id' });
+    if (!categorie_id || !libelle) {
+        return res.status(400).send({ error: libelle, message: 'Please provide categorie and categorie_id' });
     }
 
-    dbConn.query("UPDATE categories SET categorie WHERE id = ?", [categorie, categorie_id], function (error, results, fields) {
+    dbConn.query("UPDATE categories SET libelle = ? WHERE id = ?", [libelle, categorie_id], function (error, results, fields) {
         if (error) throw error;
         return res.send({ error: false, data: results, message: 'categorie has been updated successfully.' });
     });
@@ -88,9 +88,10 @@ app.put('/categorie', function (req, res) {
 
 
 //  Delete categorie
-app.delete('/categorie', function (req, res) {
+app.delete('/categorie/:id', function (req, res) {
 
-    let categorie_id = req.body.categorie.id;
+    let categorie_id = req.params.id;
+
 
     if (!categorie_id) {
         return res.status(400).send({ error: true, message: 'Please provide categorie_id' });
