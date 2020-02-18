@@ -116,7 +116,7 @@ app.get('/categorie/:id/produits', function (req, res) {
 
     dbConn.query('SELECT * FROM produits where categorie_id=?', categorie_id, function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results[0], message: 'produits by category list.' });
+        return res.send({ error: false, data: results, message: 'produits by category list.' });
     });
 
 });
