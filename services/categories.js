@@ -1,4 +1,6 @@
 const cnx = require('../config/connexionBdd.js');
+const {check, validationResult} = require('express-validator');
+
 
 exports.getAll = function (req, res) {
     cnx.query('SELECT * FROM categories', function (error, results, fields) {
@@ -16,13 +18,20 @@ exports.getOneById = function (req, res) {
 };
 
 exports.createCat = function (req, res) {
-    let categorie = req.body.categorie;
+    let libelle = req.body.libelle;
 
-    if (!categorie) {
+    // check('libelle').isAlpha()/*.isLength({min: 3, max: 10})*/;
+    const errors = validationResult(req);
+
+    if (!libelle) {
         return res.status(400).send({error: true, message: 'Please provide categorie'});
     }
 
-    cnx.query('INSERT INTO categories SET libelle = ?', categorie.libelle, function (error, results, fields) {
+    if (!errors.isEmpty()){
+        return res.status(422).json({error: true, errors: errors.array()});
+    }
+
+    cnx.query('INSERT INTO categories SET libelle = ?', libelle, function (error, results, fields) {
         if (error) throw error;
         return res.send({error: false, data: results, message: 'New categorie has been created successfully.'});
     });
